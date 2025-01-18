@@ -1,21 +1,25 @@
-import pandas as pd
-import string
+import random
+import statistics
 
-data = pd.read_csv('/Users/dhruvhanda/Desktop/Pantea Social Media/full-corpus-x.csv')
-stopwords = ['the', 'and', 'a', 'to', 'in', 'of', 'is', 'for', 'on', 'it', 'this', 'at', 'with', 'as', 'that', 'by', 'an', 'from', 'was', 'are', 'or', 'not']
+def calculation_of_consecutive_heads(n):
+    flips = 0
+    consecutive_heads = 0
+    while consecutive_heads < n:
+        flips += 1
+        if random.random() < 0.5:  # Heads
+            consecutive_heads += 1
+        else:  # Tails
+            consecutive_heads = 0
+    return flips
 
-def clean_text(text):
-    text = text.lower()
-    text = text.translate(str.maketrans('', '', string.punctuation))
-    words = text.split()
-    words = [word for word in words if word not in stopwords]
-    return ' '.join(words)
+def final_output(n, num_tri=500):
+    results = [calculation_of_consecutive_heads(n) for _ in range(num_tri)]
+    mean = statistics.mean(results)
 
-data['CleanText'] = data['TweetText'].apply(clean_text)
+    print("Number of trials:", num_tri)
+    print(f"Mean flips required:", mean)
 
-all_words = ' '.join(data['CleanText']).split()
-word_counts = pd.Series(all_words).value_counts()
 
-top_words = word_counts.head(50)
-
-print(top_words)
+if __name__ == "__main__":
+    n = 6
+    final_output(n)
